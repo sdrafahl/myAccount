@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <string>
 #include "mainMenu.h"
+#include "account.h"
 
 void startMainMenu(){
     int selection =0;
@@ -29,16 +30,23 @@ void startMainMenu(){
         break;
         case '\n':/*ENTER*/
             switch(selection){
-                case 0:
+                case 0:/*View Account*/
+                    if(acc.isConnected()){
 
+                    }
                 break;
-                case 1:
+                case 1:/*Make a new account*/
+                    if(acc.isConnected()){
 
+                    }
                 break;
-                case 2:
-
+                case 2:/*Connect to MySQL*/
+                    startMenu();
                 break;
-                case 3:
+                case 3:/*Exit and Save*/
+                    if(acc.isConnected()){
+                        /*Save Data if Connected*/
+                    }
                     exit(0);
                 break;
             }
