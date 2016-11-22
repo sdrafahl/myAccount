@@ -1,8 +1,15 @@
 #include "sqlio.h"
+#include <sstream>
+#include "account.h"
+#include "init.h"
+
+
+void printMenu(int select);
+string location;
+string user;
+string password;
 void startMenu(){
-    string location;
-    string user;
-    string password;
+    
     
     int selection=0;
     int intin;
@@ -20,11 +27,11 @@ void startMenu(){
                 selection=4;
             } 
         }
-        if(initin==258){/*Down Arrow*/
+        if(intin==258){/*Down Arrow*/
             arrowKeys=1;
             selection++;
             if(selection>4){
-                selection==0;
+                selection=0;
             }
         }
         if(!arrowKeys){
@@ -48,10 +55,11 @@ void startMenu(){
             }
             if(selection==3){/*confirm*/
                 MysqlDB db(location,user,password);
-                if(db.isConnected){
+                if(db.isConnected()){
                     string qw = "CONNECTED";
                     mvaddstr(0,40,qw.c_str());
                     sleep(2000);  
+                    Account acc;
                     acc.addDB(db);
                     return;
                 }
@@ -69,7 +77,7 @@ void startMenu(){
 }
 
 
-printMenu(int select){
+void printMenu(int select){
     init_pair(5,COLOR_GREEN,COLOR_BLACK);
     init_pair(0,COLOR_WHITE,COLOR_BLACK);
     clear();

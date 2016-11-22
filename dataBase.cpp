@@ -1,8 +1,9 @@
- #include "dataBase.h"
+ #include "account.h"
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
+
 
 using namespace std;
 using namespace sql;
@@ -13,10 +14,10 @@ MysqlDB::MysqlDB(string loc,string usr,string pass){
     driver = get_driver_instance();
     con = driver->connect(loc,usr,pass);
     con->setSchema("accountDB");
-    isConnected=1;
+    isConnectedDB=1;
     
     }catch(sql::SQLException &e){
-        isConnected=0;
+        isConnectedDB=0;
     }
 }
 int MysqlDB::printAccounts(int sel){
@@ -24,7 +25,7 @@ int MysqlDB::printAccounts(int sel){
     refresh();
     int counter =0;
     ResultSet *res;
-    statement *stmt;
+    Statement *stmt;
     init_pair(5,COLOR_GREEN,COLOR_BLACK);
     init_pair(0,COLOR_WHITE,COLOR_BLACK);
 

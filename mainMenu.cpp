@@ -2,6 +2,10 @@
 #include <string>
 #include "mainMenu.h"
 #include "account.h"
+#include "sqlio.h"
+#include "init.h"
+
+
 
 void startMainMenu(){
     int selection =0;
@@ -17,15 +21,15 @@ void startMainMenu(){
     switch(ch){
 
         case 258:/*DOWN ARROW*/
-            selection--;
-            if(selection==-1){
-                selection=3;
-            }
-        break;
-        case 259:/*UP ARROW*/
             selection++;
             if(selection==4){
                 selection=0;
+            }
+        break;
+        case 259:/*UP ARROW*/
+            selection--;
+            if(selection==-1){
+                selection=3;
             }
         break;
         case '\n':/*ENTER*/
@@ -47,6 +51,7 @@ void startMainMenu(){
                     if(acc.isConnected()){
                         /*Save Data if Connected*/
                     }
+                    endwin();
                     exit(0);
                 break;
             }
@@ -73,7 +78,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     string menu = "VIEW ACCOUNTS";
-    mvaddstr(0,40,menu.c_str());
+    mvaddstr(0,50,menu.c_str());
     if(select==0){
         attroff(COLOR_PAIR(5));
     }else{
@@ -86,7 +91,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "MAKE A NEW ACCOUNT";
-    mvaddstr(1,40,menu.c_str());
+    mvaddstr(1,45,menu.c_str());
     if(select==1){
         attroff(COLOR_PAIR(5));
     }else{
@@ -99,7 +104,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "CONNECT TO MYSQL DATABASE";
-    mvaddstr(2,40,menu.c_str());
+    mvaddstr(2,45,menu.c_str());
     if(select==2){
         attroff(COLOR_PAIR(5));
     }else{
@@ -112,7 +117,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "EXIT";
-    mvaddstr(2,40,menu.c_str());
+    mvaddstr(3,45,menu.c_str());
     if(select==3){
         attroff(COLOR_PAIR(5));
     }else{

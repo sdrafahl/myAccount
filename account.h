@@ -1,40 +1,57 @@
 #ifndef ACCOUNT
 # define ACCOUNT
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+#include <ncurses.h>
 #include <sstream>
-#include <iostream>
-
-using namespace std;
 #include <string>
+using namespace std;
+
+
+class MysqlDB{
+    public:
+        
+        inline ~MysqlDB(){}
+        inline void disc(){
+            delete con;
+        }
+        inline int isConnected(){
+            return isConnectedDB;
+        }
+        inline MysqlDB(){}
+        MysqlDB(string loc,string usr,string pass);
+        int printAccounts(int sel);
+
+    private:
+    sql::Driver *driver;
+    sql::Connection *con;
+    int isConnectedDB;
+};
 class Account{
     public:
-    inline Account(){
-
-    }
-    inline ~Account(){
-
-    }
+    Account();
+    ~Account();
     inline int isConnected(){
-        return connected;
+        return connectedIndicator;
     }
     inline void connected(){
-        connected=1;
+        connectedIndicator=1;
     }
     inline void disconect(){
-        connected=0;
+        connectedIndicator=0;
         db.disc();
-    }
-    inline addDB(MysqlDB x){
-        db=x;
     }
     inline MysqlDB getDB(){
         return db;
     } 
-    
+    void addDB(MysqlDB x);
     private:
-    int connected;
+    int connectedIndicator;
     MysqlDB db;
 };
 
 
-extern Account acc;
+
 #endif

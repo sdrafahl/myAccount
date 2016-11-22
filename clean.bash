@@ -5,3 +5,5 @@ rm mainMenu.o
 rm init.o 
 rm dataBase.o
 rm account.o
+rm myAccount
+reset

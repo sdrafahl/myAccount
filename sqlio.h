@@ -1,5 +1,8 @@
 #ifndef SQLIO
 #define SQLIO
-#include <ncurses>
+#include <ncurses.h>
+#include <string>
+#include "account.h"
+void startMenu();
 
 #endif

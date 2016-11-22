@@ -1,4 +1,7 @@
 #include "viewAccounts.h"
+#include "init.h"
+
+
 
 void controlAccounts(){
     int selection =0;
