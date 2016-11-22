@@ -1,4 +1,5 @@
-startMenu(){
+#include "sqlio.h"
+void startMenu(){
     string location;
     string user;
     string password;
@@ -27,32 +28,35 @@ startMenu(){
             }
         }
         if(!arrowKeys){
-            if(selection==0){
+            if(selection==0){/*locations, ip address*/
                 std::ostringstream input;
                 input.str(location);
                  input << in;
                  location = input.str();
             }
-            if(selection==1){
+            if(selection==1){/*username*/
                 std::ostringstream input;
                 input.str(user);
                 input << in;
                 user = input.str();
             }
-            if(selection==2){
+            if(selection==2){/*password*/
                 std::ostringstream input;
                 input.str(password);
                 input << in;
                 password = input.str();
             }
-            if(selection==3){
+            if(selection==3){/*confirm*/
                 MysqlDB db(location,user,password);
                 if(db.isConnected){
+                    string qw = "CONNECTED";
+                    mvaddstr(0,40,qw.c_str());
+                    sleep(2000);  
                     acc.addDB(db);
                     return;
                 }
             }
-            if(selection==4){
+            if(selection==4){/*back*/
                 if(in=='\n'){
                     return;
                 }

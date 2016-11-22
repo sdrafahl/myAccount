@@ -1,5 +1,7 @@
 #ifndef ACCOUNT
 # define ACCOUNT
+#include <sstream>
+#include <iostream>
 
 using namespace std;
 #include <string>
@@ -19,12 +21,16 @@ class Account{
     }
     inline void disconect(){
         connected=0;
+        db.disc();
     }
     inline addDB(MysqlDB x){
         db=x;
+    }
+    inline MysqlDB getDB(){
+        return db;
     } 
+    
     private:
-    string name;
     int connected;
     MysqlDB db;
 };

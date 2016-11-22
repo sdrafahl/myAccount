@@ -98,7 +98,7 @@ void printMainMenu(int select){
     }else{
         attron(COLOR_PAIR(0));
     }
-    menu = "CONNECT TO LOCAL MYSQL DATABASE";
+    menu = "CONNECT TO MYSQL DATABASE";
     mvaddstr(2,40,menu.c_str());
     if(select==2){
         attroff(COLOR_PAIR(5));

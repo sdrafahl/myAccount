@@ -3,4 +3,6 @@ read user
 mysql -p -u "$user" accountDB < layout.dump
 
 
-# note database is accountDB , user is shane, table per user
+# note database is accountDB , user is shane, table ACCOUNTS and table TABLE_<ACCOUNT>
+
+
