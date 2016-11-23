@@ -32,7 +32,7 @@ void startMainMenu(){
                 selection=3;
             }
         break;
-        case '\n':/*ENTER*/
+        case 10:/*ENTER*/
             switch(selection){
                 case 0:/*View Account*/
                     if(acc.isConnected()){
@@ -72,13 +72,16 @@ void printMainMenu(int select){
     init_pair(0,COLOR_WHITE,COLOR_BLACK);
     clear();
     refresh();
+    
+    printBorder();
+    
     if(select==0){
         attron(COLOR_PAIR(5));
     }else{
         attron(COLOR_PAIR(0));
     }
     string menu = "VIEW ACCOUNTS";
-    mvaddstr(0,50,menu.c_str());
+    mvaddstr(2,33,menu.c_str());
     if(select==0){
         attroff(COLOR_PAIR(5));
     }else{
@@ -91,7 +94,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "MAKE A NEW ACCOUNT";
-    mvaddstr(1,45,menu.c_str());
+    mvaddstr(4,31,menu.c_str());
     if(select==1){
         attroff(COLOR_PAIR(5));
     }else{
@@ -104,7 +107,7 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "CONNECT TO MYSQL DATABASE";
-    mvaddstr(2,45,menu.c_str());
+    mvaddstr(6,28,menu.c_str());
     if(select==2){
         attroff(COLOR_PAIR(5));
     }else{
@@ -117,11 +120,29 @@ void printMainMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "EXIT";
-    mvaddstr(3,45,menu.c_str());
+    mvaddstr(8,38,menu.c_str());
     if(select==3){
         attroff(COLOR_PAIR(5));
     }else{
         attroff(COLOR_PAIR(0));
     }
 
+}
+
+void printBorder(){
+    int x=0;
+    int y=0;
+    string d = "#";
+    for(y=0;y<80;y++){/*Top*/
+        mvaddstr(0,y,d.c_str());
+    }
+    for(y=0;y<80;y++){/*Bottom*/
+        mvaddstr(20,y,d.c_str());
+    }
+    for(x=0;x<21;x++){/*Left Side*/
+        mvaddstr(x,0,d.c_str());
+    }
+    for(x=0;x<21;x++){/*Right Side*/
+        mvaddstr(x,80,d.c_str());
+    }
 }

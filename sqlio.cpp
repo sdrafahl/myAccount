@@ -2,7 +2,7 @@
 #include <sstream>
 #include "account.h"
 #include "init.h"
-
+#include "mainMenu.h"
 
 void printMenu(int select);
 string location;
@@ -20,47 +20,71 @@ void startMenu(){
         in = getch();
         intin = (int)in;
         arrowKeys=0;
-        if(intin==259){/*Up Arrow*/
+        if(intin==3){/*Up Arrow*/
             arrowKeys=1;
             selection--;
             if(selection==-1){
                 selection=4;
             } 
         }
-        if(intin==258){/*Down Arrow*/
+        if(intin==2){/*Down Arrow*/
             arrowKeys=1;
             selection++;
             if(selection>4){
                 selection=0;
             }
         }
-        if(!arrowKeys){
-            if(selection==0){/*locations, ip address*/
-                std::ostringstream input;
-                input.str(location);
-                 input << in;
-                 location = input.str();
-            }
+        if(!arrowKeys){/*locations, ip address*/
+            if(selection==0){    
+                if(in=='\a'){
+                  location = location.substr(0,location.size()-1);
+                }else{
+                    location = location + in;
+                }
+                }
+            
             if(selection==1){/*username*/
-                std::ostringstream input;
-                input.str(user);
-                input << in;
-                user = input.str();
+                if(in=='\a'){
+                  user = user.substr(0,user.size()-1);
+                }else{
+                    user = user + in;
+                }
+                
             }
             if(selection==2){/*password*/
-                std::ostringstream input;
-                input.str(password);
-                input << in;
-                password = input.str();
+                
+                if(in=='\a'){
+                    password = password.substr(0,password.size()-1);
+                }else{
+                    password = password + in;
+                }
+                
             }
             if(selection==3){/*confirm*/
                 MysqlDB db(location,user,password);
                 if(db.isConnected()){
+                    clear();
+                    init_pair(5,COLOR_GREEN,COLOR_BLACK);
+                    attron(COLOR_PAIR(5));
                     string qw = "CONNECTED";
-                    mvaddstr(0,40,qw.c_str());
-                    sleep(2000);  
+                    mvaddstr(8,38,qw.c_str());
+                    attroff(COLOR_PAIR(5));
+                    printBorder();
+                    refresh();
+                    sleep(2);  
                     Account acc;
                     acc.addDB(db);
+                    return;
+                }else{
+                    clear();
+                    init_pair(6,COLOR_RED,COLOR_BLACK);
+                    attron(COLOR_PAIR(6));
+                    string qw = "FAILED TO CONNECT";
+                    mvaddstr(8,38,qw.c_str());
+                    attroff(COLOR_PAIR(6));
+                    printBorder();
+                    refresh();
+                    sleep(2);  
                     return;
                 }
             }
@@ -73,15 +97,17 @@ void startMenu(){
     }
     
 
-    
-}
+    }
+
 
 
 void printMenu(int select){
+    
     init_pair(5,COLOR_GREEN,COLOR_BLACK);
     init_pair(0,COLOR_WHITE,COLOR_BLACK);
     clear();
     refresh();
+    printBorder();
     if(select==0){
         attron(COLOR_PAIR(5));
     }else{
@@ -89,9 +115,10 @@ void printMenu(int select){
     }
         
     std::ostringstream stream;
-    stream.str("ENTER IP OR localhost: ");
-    stream << location;
-    mvaddstr(0,40,stream.str().c_str());
+    string field = "ENTER IP OR localhost: ";
+    stream.str("");
+    stream << field << location;
+    mvaddstr(1,40,stream.str().c_str());
     if(select==0){
         attroff(COLOR_PAIR(5));
     }else{
@@ -105,10 +132,11 @@ void printMenu(int select){
     }
     
     std::ostringstream stream1;
-    stream1.str("MYSQL USERNAME: ");
-    stream1 << user;
+    string field1 = "MYSQL USERNAME: ";
+    stream1.str("");
+    stream1 << field1 << user;
     
-    mvaddstr(1,40,stream1.str().c_str());
+    mvaddstr(2,40,stream1.str().c_str());
     if(select==1){
         attroff(COLOR_PAIR(5));
     }else{
@@ -122,9 +150,15 @@ void printMenu(int select){
     }
     
     std::ostringstream stream2;
-    stream2.str("MYSQL PASSWORD: ");
-    stream2 << user;
-    mvaddstr(2,40,stream2.str().c_str());
+    string field2 = "MYSQL PASSWORD: ";
+    stream2.str("");
+    int total = password.size();
+    int incra=0;
+    stream2 << field2;
+    for(incra=0;incra<total;incra++){
+        stream2 << "*";
+    }
+    mvaddstr(3,40,stream2.str().c_str());
     if(select==2){
         attroff(COLOR_PAIR(5));
     }else{
@@ -137,7 +171,7 @@ void printMenu(int select){
         attron(COLOR_PAIR(0));
     }
     string menu = "CONFIRM";
-    mvaddstr(3,40,menu.c_str());
+    mvaddstr(4,40,menu.c_str());
     if(select==3){
         attroff(COLOR_PAIR(5));
     }else{
@@ -150,7 +184,7 @@ void printMenu(int select){
         attron(COLOR_PAIR(0));
     }
     menu = "BACK";
-    mvaddstr(4,40,menu.c_str());
+    mvaddstr(5,40,menu.c_str());
     if(select==4){
         attroff(COLOR_PAIR(5));
     }else{
