@@ -46,12 +46,15 @@ class Account{
     inline MysqlDB getDB(){
         return db;
     } 
+    inline Statement& getStatement(){
+        return db.con->createStatement();
+    }
     void addDB(MysqlDB x);
     private:
     int connectedIndicator;
     MysqlDB db;
 };
 
-
+extern Account acc;
 
 #endif

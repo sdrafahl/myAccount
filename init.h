@@ -3,6 +3,6 @@
 #include "account.h"
 
 void setup();
-extern Account acc;
+
 
 #endif

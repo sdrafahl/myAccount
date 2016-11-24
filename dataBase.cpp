@@ -1,4 +1,5 @@
  #include "account.h"
+ #include "mainMenu.h"
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
@@ -23,6 +24,7 @@ MysqlDB::MysqlDB(string loc,string usr,string pass){
 int MysqlDB::printAccounts(int sel){
     clear();
     refresh();
+    printBorder();
     int counter =0;
     ResultSet *res;
     Statement *stmt;
@@ -36,21 +38,36 @@ int MysqlDB::printAccounts(int sel){
         counter++;
         std::ostringstream stringStream;
         stringStream.str("");
-        stringStream << "|" << res->getInt(1) << "|" << res->getInt(2) << "|" << res->getInt(3) << "|" << res->getInt(4) << "|";
+        stringStream << "|" << res->getString(1) << "|" << res->getString(2) << "|" << res->getString(3) << "|" << res->getString(4) << "|";
         
         if(sel==incr){
             attron(COLOR_PAIR(5));
         }else{
-            attron(COLOR_PAIR(1));
+            attron(COLOR_PAIR(0));
         }
-        mvaddstr(incr,40,stringStream.str().c_str());
+        mvaddstr(incr+1,40,stringStream.str().c_str());
         if(sel==incr){
             attroff(COLOR_PAIR(5));
         }else{
             attroff(COLOR_PAIR(0));
         }
+        incr++;
 
     }
-    return counter;
+    if(sel==incr){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    string exit = "RETURN";
+    mvaddstr(incr+1,40,exit.c_str());
+    if(sel==incr){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
 
+    delete res;
+    delete stmt;
+    return counter+1;
 }

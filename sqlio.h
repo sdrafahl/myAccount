@@ -4,5 +4,5 @@
 #include <string>
 #include "account.h"
 void startMenu();
-
+void controlAccounts();
 #endif

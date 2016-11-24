@@ -1,8 +1,13 @@
+#include "init.h"
 #include "sqlio.h"
 #include <sstream>
 #include "account.h"
-#include "init.h"
 #include "mainMenu.h"
+
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
 
 void printMenu(int select);
 string location;
@@ -72,7 +77,6 @@ void startMenu(){
                     printBorder();
                     refresh();
                     sleep(2);  
-                    Account acc;
                     acc.addDB(db);
                     return;
                 }else{
@@ -194,3 +198,67 @@ void printMenu(int select){
 
 
 }
+
+void controlAccounts(){
+    int selection =0;
+    int val = 0;
+    int total = 0;
+    while(1){
+        
+        MysqlDB te = acc.getDB();
+        total = te.printAccounts(selection);
+        
+
+        val = getch();
+        
+        if(val==258){/*Down Arrow*/
+            selection++;
+            if(selection==total){
+                selection=0;
+            }
+        }
+        if(val==259){/*Up Arrow*/
+            selection--;
+            if(selection==-1){
+                selection=total-1;
+            }
+        }
+        if(val==10){
+            if(total-1==selection){
+                return;
+            }
+        }
+    }    
+}
+
+
+void control_a_Account(){
+    int selection = 0;
+    
+}
+void print_a_Account(int select){
+     init_pair(5,COLOR_GREEN,COLOR_BLACK);
+     init_pair(0,COLOR_WHITE,COLOR_BLACK);
+     clear();
+     refresh();
+     printBorder();
+     /*Prints Border Between Data and Computed Data*/
+     int val = 0;
+     string border = "#";
+     for(val=0;val<80;val++){
+         mvaddstr(20,val,border.c_str());
+     }
+     /*Prints Data About the Account*/
+     ResultSet& res;
+     Statement& stmt;
+
+     std::ostringstream ss;
+     string command = "SELECT * FROM ACCOUNTS LIMIT ";
+     ss.str("");
+     ss << command << select << ",1";
+     stmt = acc.getStatement();
+     res = stmt.executeQuery(ss.str());
+
+}
+
+

@@ -1,10 +1,9 @@
 #include <ncurses.h>
+#include "init.h"
 #include <string>
 #include "mainMenu.h"
 #include "account.h"
 #include "sqlio.h"
-#include "init.h"
-
 
 
 void startMainMenu(){
@@ -36,7 +35,7 @@ void startMainMenu(){
             switch(selection){
                 case 0:/*View Account*/
                     if(acc.isConnected()){
-
+                        controlAccounts();
                     }
                 break;
                 case 1:/*Make a new account*/
@@ -137,12 +136,12 @@ void printBorder(){
         mvaddstr(0,y,d.c_str());
     }
     for(y=0;y<80;y++){/*Bottom*/
-        mvaddstr(20,y,d.c_str());
+        mvaddstr(25,y,d.c_str());
     }
-    for(x=0;x<21;x++){/*Left Side*/
+    for(x=0;x<26;x++){/*Left Side*/
         mvaddstr(x,0,d.c_str());
     }
-    for(x=0;x<21;x++){/*Right Side*/
+    for(x=0;x<26;x++){/*Right Side*/
         mvaddstr(x,80,d.c_str());
     }
 }
