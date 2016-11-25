@@ -4,12 +4,14 @@
 #include "account.h"
 #include "mainMenu.h"
 #include <ctime>
-
+#include <iostream>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
-
+struct AccountData;
+AccountData print_a_Account(int select,int internal);
+void control_a_Account(int selection);
 void printMenu(int select);
 string location;
 string user;
@@ -227,6 +229,8 @@ void controlAccounts(){
         if(val==10){
             if(total-1==selection){
                 return;
+            }else{
+                control_a_Account(selection);
             }
         }
     }    
@@ -235,36 +239,35 @@ void controlAccounts(){
 struct AccountData {
     int count;
     float total;
-
-}
+};
 /*Requires Digit Format*/
 static int getDaysOfMonth(int month){
     switch(month){
-        case 01: /*January*/
+        case 1: /*January*/
             return 31;
         break;
-        case 02:/*February*/
+        case 2:/*February*/
             return 28;
         break;
-        case 03:/*March*/
+        case 3:/*March*/
             return 31;
         break;
-        case  04:/*April*/
+        case  4:/*April*/
             return 30;
         break;
-        case 05: /*May*/
+        case 5: /*May*/
             return 31;
         break;
-        case 06:/*june*/
+        case 6:/*june*/
             return 30;
         break;
-        case 07:/*July*/
+        case 7:/*July*/
             return 31;
         break;
-        case 08:/*August*/
+        case 8:/*August*/
             return 31;
         break;
-        case 09:/*September*/
+        case 9:/*September*/
             return 30;
         break;
         case 10:/*October*/
@@ -281,52 +284,44 @@ static int getDaysOfMonth(int month){
     /*Incase Somthing Goes Wrong it returns the Average*/
     return 30;
 }
-static string getCurrentDateTime(int useLocalTime) {
+static string getCurrentDateTime() {
     stringstream currentDateTime;
-    // current date/time based on current system
+    
     time_t ttNow = time(0);
-    tm * ptmNow;
+    tm *ltm = localtime(&ttNow);
 
-    if (useLocalTime)
-        ptmNow = localtime(&ttNow);
-    else
-        ptmNow = gmtime(&ttNow);
-
-    currentDateTime << 1900 + ptmNow->tm_year;
-
-    //month
-    if (ptmNow->tm_mon < 9)
-        //Fill in the leading 0 if less than 10
-        currentDateTime << "0" << 1 + ptmNow->tm_mon;
-    else
-        currentDateTime << (1 + ptmNow->tm_mon);
-
-    //day
-    if (ptmNow->tm_mday < 9)
-        currentDateTime << "0" << 1 + ptmNow->tm_mday << " ";
-    else
-        currentDateTime << (1 + ptmNow->tm_mday) << " ";
-
+    currentDateTime << 1900 + ltm->tm_year;
+    if(1 + ltm->tm_mon<=9){
+        currentDateTime << "0" << 1 + ltm->tm_mon;
+    }else{
+        currentDateTime << 1 + ltm->tm_mon;
+    }
+    if(ltm->tm_mday<=9){
+        currentDateTime << "0" << ltm->tm_mday;
+    }else{
+        currentDateTime << ltm->tm_mday;
+    }
+    free(ltm);
     return currentDateTime.str();
 }
 /*Returns Absolute Value of Total Recurring Payment*/
-static int getRecurringPayments(string dateFrom, string dateTo, string period, string amount){
+static float getRecurringPayments(string dateFrom, string dateTo, string period, string amount){
     /*Does Not Account for Leap Years*/
-    int totalDays = 0;
+    float totalDays = 0;
     /*Calculating the Number of Days Between The Dates Given with MYSQL Format*/
-    int year2Val = 0;
-    int month2Val = 0;
-    int day2Val = 0;
+    float year2Val = 0;
+    float month2Val = 0;
+    float day2Val = 0;
 
     
-    int yar1Val = 0;
-    int month1Val =0;
-    int day1Val = 0;
+    float year1Val = 0;
+    float month1Val =0;
+    float day1Val = 0;
 
     /*Second Date Given*/
     stringstream year2;
     char in;
-    int counter=0;
+    float counter=0;
     year2.str("");
     in = dateTo.at(counter);
     while(in!='-'){
@@ -337,7 +332,7 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     year2 >> year2Val;
 
     stringstream month2;
-    in = '';
+    in = ' ';
     counter++;
     month2.str("");
     in = dateTo.at(counter);
@@ -349,7 +344,7 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     month2 >> month2Val;
 
     stringstream day2;
-    in = '';
+    in = ' ';
     counter++;
     day2.str("");
     in = dateTo.at(counter);
@@ -375,7 +370,7 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     year1 >> year1Val;
 
     stringstream month1;
-    in = '';
+    in = ' ';
     counter++;
     month1.str("");
     in = dateTo.at(counter);
@@ -387,7 +382,7 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     month1 >> month1Val;
 
     stringstream day1;
-    in = '';
+    in = ' ';
     counter++;
     day1.str("");
     in = dateTo.at(counter);
@@ -398,29 +393,30 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     }
     day1 >> day1Val;
 
-    int yearDif = year2Val - year1Val;
+    float yearDif = year2Val - year1Val;
     yearDif*=365;
     
-    int monthCount;
-    int monthDif = 0;
+    float monthCount;
+    float monthDif = 0;
     for(monthCount=month1Val;monthCount<month2Val;monthCount++){
         monthDif += getDaysOfMonth(monthCount);
     }
-    int dayDif = day2Val - day1Val;
+    float dayDif = day2Val - day1Val;
     totalDays= dayDif + monthDif + yearDif;
 
     stringstream convert(period);
-    int periodVal = 0;
+    float periodVal = 0;
     convert >> periodVal;
     
-    string current = getCurrentDateTime(1);
+    string current = getCurrentDateTime();
     string year = current.substr(0,4);/*This Program Will crash beyond the year 9999*/
     string month = current.substr(4,2);
     string day = current.substr(6,2);
 
     /*Convert Months To Days*/
-    stringstream con.str(month);
-    int currentMonthVal =0;
+    stringstream con;
+    con.str(month);
+    float currentMonthVal =0;
     con >> currentMonthVal;
     
     monthCount = 0;
@@ -428,29 +424,31 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
     for(monthCount=month1Val;monthCount<currentMonthVal;monthCount++){
         monthDif += getDaysOfMonth(monthCount);
     }
-    stringstream var1.str(year);
-    int currentYearVal = 0;
+    stringstream var1;
+    var1.str(year);
+    float currentYearVal = 0;
     var1 >> currentYearVal;
-
-    stringstream dayConverter.str(day);
-    int currentDayVal = 0;
+    
+    stringstream dayConverter;
+    dayConverter.str(day);
+    float currentDayVal = 0;
     dayConverter >> currentDayVal;
 
-    int currentDayDif = currentDayVal - day1Val;
-    int currentInitDif = ((currentYearVal - year1Val)*365) + monthDif + currentDayDif;
+    float currentDayDif = currentDayVal - day1Val;
+    float currentInitDif = ((currentYearVal - year1Val)*365) + monthDif + currentDayDif;
 
     stringstream periodConverter;
     periodConverter.str(period);
-    int perVal = 0;
+    float perVal = 0;
     periodConverter >> perVal;
 
     stringstream ammountConverter;
     ammountConverter.str(amount);
-    int amountVal = 0;
+    float amountVal = 0;
     ammountConverter >> amountVal;
 
-    int grandTotal = 0;
-    int incramentor;
+    float grandTotal = 0;
+    float incramentor;
     for(incramentor = 0;incramentor<=totalDays && incramentor<currentInitDif;incramentor+=perVal){
         grandTotal+=amountVal;
     } 
@@ -458,11 +456,39 @@ static int getRecurringPayments(string dateFrom, string dateTo, string period, s
 
 }
 
-void control_a_Account(){
-    int selection = 0;
+void control_a_Account(int selection){
+    int internal =0;
+    int val = 0;
+    AccountData data;
+    while(1){
+        
+        data = print_a_Account(selection,internal);
+        
+
+        val = getch();
+        
+        if(val==258){/*Down Arrow*/
+            internal++;
+            if(internal==data.total){
+                internal=0;
+            }
+        }
+        if(val==259){/*Up Arrow*/
+            internal--;
+            if(internal==-1){
+                internal=data.total-1;
+            }
+        }
+        if(val==10){
+            if(data.total==internal){
+                return;
+            }
+        }
+    }    
     
 }
-AccountData print_a_Account(int select){
+
+AccountData print_a_Account(int select,int internal){
      init_pair(5,COLOR_GREEN,COLOR_BLACK);
      init_pair(0,COLOR_WHITE,COLOR_BLACK);
      clear();
@@ -475,15 +501,16 @@ AccountData print_a_Account(int select){
          mvaddstr(20,val,border.c_str());
      }
      /*Prints Data About the Account*/
-     ResultSet& res;
-     Statement& stmt;
+     ResultSet* res;
+     Statement* stmt;
 
      std::ostringstream ss;
      string command = "SELECT * FROM ACCOUNTS LIMIT ";
      ss.str("");
      ss << command << select << ",1";
      stmt = acc.getStatement();
-     res = stmt.executeQuery(ss.str());
+     res = stmt->executeQuery(ss.str());
+     AccountData rets;
      while(res->next()){
          std::ostringstream con;
          con.str("");
@@ -493,27 +520,63 @@ AccountData print_a_Account(int select){
          delete res;
          stmt = acc.getStatement();
          string command = "SELECT * FROM ";
-         res = stmt.executeQuery(command + con.str());
+         res = stmt->executeQuery(command + con.str());
          int counter=0;
          float total=0;/*Total Amount*/
-         while(res.next()){
+         while(res->next()){
              counter++;
              string row = "";
-             row = row + res.getString(1) + "|" + res.getString(2) + "|" + res.getString(3) + "|" + res.getString(4) "|" + res.getString(5) "|" + res.getString(6) "|" + res.getString(7) "|" + res.getString(8) + "|";
-             if(res.getString(2)=="1"){
-                 /*Recurring*/
-                 int amount = getRecurringPayments(res.getString(3),res.getString(4),res.getString(5),res.getString(6));
-                 /*If it is an expense*/
-                 if(res.getString(1)=="1"){
-                     amount*=-1;
-                 }
-                 total+=amount;
+             row = row + res->getString(1) + "|" + res->getString(2) + "|" + res->getString(3) + "|" + res->getString(4) + "|" + res->getString(5) + "|" + res->getString(6) + "|" + res->getString(7) + "|" + res->getString(8) + "|";
+             if((counter-1)==internal){
+                 attron(COLOR_PAIR(5));
              }else{
-                 /*Not Recurring*/
+                 attron(COLOR_PAIR(0));
+             }
+             mvaddstr(counter,35,row.c_str());
+             if((counter-1)==internal){
+                 attroff(COLOR_PAIR(5));
+             }else{
+                 attroff(COLOR_PAIR(0));
+             }
 
+             if(res->getString(2)=="1"){
+                 /*Recurring*/
+                 float amount = getRecurringPayments(res->getString(3),res->getString(4),res->getString(5),res->getString(6));
+                 /*If it is an expense*/
+                if(res->getString(1)=="1"){
+                    amount*=-1;
+                }
+                 total+=amount;
+                }else{
+                 /*Not Recurring*/
+                 stringstream conver;
+                 conver.str(res->getString(6));
+                 float num;
+                 conver >> num;
+                 if(res->getString(1)=="1"){
+                    num*=-1;
+                }
+                total+=num;
              }
          }
+         if((counter-1)==internal){
+                 attron(COLOR_PAIR(5));
+             }else{
+                 attron(COLOR_PAIR(0));
+             }
+             string ret = "RETURN";
+             mvaddstr(counter+1,35,ret.c_str());
+             if((counter-1)==internal){
+                 attroff(COLOR_PAIR(5));
+             }else{
+                 attroff(COLOR_PAIR(0));
+             }
+         
+         
+         rets.total = total;
+         rets.count = counter;
      }
+        return rets;
 }
 
 

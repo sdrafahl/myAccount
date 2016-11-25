@@ -7,8 +7,9 @@
 #include <ncurses.h>
 #include <sstream>
 #include <string>
-using namespace std;
 
+using namespace std;
+using namespace sql;
 
 class MysqlDB{
     public:
@@ -23,10 +24,10 @@ class MysqlDB{
         inline MysqlDB(){}
         MysqlDB(string loc,string usr,string pass);
         int printAccounts(int sel);
-
+       sql::Driver *driver;
+        sql::Connection *con; 
     private:
-    sql::Driver *driver;
-    sql::Connection *con;
+    
     int isConnectedDB;
 };
 class Account{
@@ -46,7 +47,7 @@ class Account{
     inline MysqlDB getDB(){
         return db;
     } 
-    inline Statement& getStatement(){
+    inline Statement* getStatement(){
         return db.con->createStatement();
     }
     void addDB(MysqlDB x);
