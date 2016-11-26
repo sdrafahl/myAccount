@@ -16,10 +16,15 @@ MysqlDB::MysqlDB(string loc,string usr,string pass){
     con = driver->connect(loc,usr,pass);
     con->setSchema("accountDB");
     isConnectedDB=1;
-    
+    acc.location=loc;
+    acc.user=usr;
     }catch(sql::SQLException &e){
         isConnectedDB=0;
+        acc.location=" ";
+        acc.user=" ";
     }
+    
+    
 }
 int MysqlDB::printAccounts(int sel){
     clear();

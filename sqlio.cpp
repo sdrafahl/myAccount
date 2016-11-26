@@ -13,6 +13,7 @@ struct AccountData;
 AccountData print_a_Account(float scale_x,float scale_y,int select,int internal);
 void control_a_Account(int selection);
 void printMenu(int select);
+void removeColumn(AccountData d,int sel);
 string location;
 string user;
 string password;
@@ -242,6 +243,8 @@ struct AccountData {
 
     float scalex;
     float scaley;
+
+    string table;
 };
 /*Requires Digit Format*/
 static int getDaysOfMonth(int month){
@@ -489,10 +492,16 @@ void control_a_Account(int selection){
                
             }
         }
+        if(val==114){
+            if(!data.count==internal){
+                removeColumn(data,internal);
+            }
+        }
         if(val==10){
             if(data.count==internal){
                 return;
             }
+
         }
     }    
     
@@ -512,7 +521,7 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
      /*Prints Border Between Data and Computed Data*/
      int val = 0;
      string border = "#";
-     for(val=0;val<80;val++){
+     for(val=0;val<80*scalex;val++){
          mvaddstr(height,val,border.c_str());
      }
      /*Prints Data About the Account*/
@@ -536,6 +545,7 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
          stmt = acc.getStatement();
          string command = "SELECT * FROM ";
          res = stmt->executeQuery(command + con.str());
+         rets.table=con.str();
          int counter=0;
          float total=0;/*Total Amount*/
          while(res->next()){
@@ -643,7 +653,7 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
          display.str("");
          display << total;
          totaldisp += display.str();
-         mvaddstr(21,1,totaldisp.c_str());
+         mvaddstr(height+1,1,totaldisp.c_str());
          if(total>=0){
             attroff(COLOR_PAIR(5));
         }else{
@@ -655,7 +665,11 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
             scaley*=.25;
         }
         
-
+        string rem = "REMOVE - r";
+        mvaddstr(height+1,20,rem.c_str());
+        
+        rem = "NEW - a";
+        mvaddstr(height+2,20,rem.c_str());
 
         rets.scalex = scalex;
         rets.scaley = scaley;
@@ -665,3 +679,30 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
 /*
 INSERT INTO RobWood5 VALUES (  0 ,1 ,'2016-01-01','2016-05-15' ,1,20 ,'JOB' ,NULL);
 */
+
+void removeColumn(AccountData d,int sel){
+    
+    ResultSet* res;
+     Statement* stmt;
+
+     std::ostringstream ss;
+     ss.str("");
+     ss << sel;
+     string command = "SELECT * FROM " + d.table + " LIMIT " + ss.str() + ",1";
+     
+     
+     stmt = acc.getStatement();
+     res = stmt->executeQuery(command);
+     res->next();
+     std::ostringstream con;
+     con.str("");
+     con << res->getString(8);
+     /*con should hold the table name*/
+     delete stmt;
+     delete res;
+     stmt = acc.getStatement();
+     command = "DELETE FROM " + d.table + " WHERE ID= '" + con.str() +"'";
+     stmt->execute(command);
+
+     
+}

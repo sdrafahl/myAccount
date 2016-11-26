@@ -21,14 +21,14 @@ void startMainMenu(){
 
         case 258:/*DOWN ARROW*/
             selection++;
-            if(selection==4){
+            if(selection==5){
                 selection=0;
             }
         break;
         case 259:/*UP ARROW*/
             selection--;
             if(selection==-1){
-                selection=3;
+                selection=4;
             }
         break;
         case 10:/*ENTER*/
@@ -46,7 +46,10 @@ void startMainMenu(){
                 case 2:/*Connect to MySQL*/
                     startMenu();
                 break;
-                case 3:/*Exit and Save*/
+                case 3:/*Disconect*/
+                    acc.disconect();
+                break;
+                case 4:/*Exit and Save*/
                     if(acc.isConnected()){
                         /*Save Data if Connected*/
                     }
@@ -69,6 +72,7 @@ void printMainMenu(int select){
     
     init_pair(5,COLOR_GREEN,COLOR_BLACK);
     init_pair(0,COLOR_WHITE,COLOR_BLACK);
+    init_pair(6,COLOR_RED,COLOR_BLACK);
     clear();
     refresh();
     
@@ -114,17 +118,56 @@ void printMainMenu(int select){
     }
 
     if(select==3){
-        attron(COLOR_PAIR(5));
+    attron(COLOR_PAIR(5));
     }else{
         attron(COLOR_PAIR(0));
     }
-    menu = "EXIT";
-    mvaddstr(8,38,menu.c_str());
+    menu = "DISCONNECT";
+    mvaddstr(8,35,menu.c_str());
     if(select==3){
         attroff(COLOR_PAIR(5));
     }else{
         attroff(COLOR_PAIR(0));
     }
+
+    if(select==4){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    menu = "EXIT";
+    mvaddstr(10,38,menu.c_str());
+    if(select==4){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    /*Status Information*/
+     int val = 0;
+     string border = "#";
+     for(val=0;val<80;val++){
+         mvaddstr(20,val,border.c_str());
+     }
+
+     if(acc.isConnected()){
+         attron(COLOR_PAIR(5));
+         string disp = "CONNECTED";
+         mvaddstr(21,2,disp.c_str());
+         disp = "SERVER: ";
+         disp+= acc.location;
+         mvaddstr(22,2,disp.c_str());
+         disp = "USER: ";
+         disp+=acc.user;
+         mvaddstr(23,2,disp.c_str());
+         attroff(COLOR_PAIR(5));
+
+     }else{
+         attron(COLOR_PAIR(6));
+         string disp = "NOT CONNECTED";
+         mvaddstr(21,2,disp.c_str());
+         attroff(COLOR_PAIR(6));
+     }
 
 }
 

@@ -51,6 +51,8 @@ class Account{
         return db.con->createStatement();
     }
     void addDB(MysqlDB x);
+    string location;
+    string user;
     private:
     int connectedIndicator;
     MysqlDB db;
