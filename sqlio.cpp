@@ -10,7 +10,7 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 struct AccountData;
-AccountData print_a_Account(int select,int internal);
+AccountData print_a_Account(float scale_x,float scale_y,int select,int internal);
 void control_a_Account(int selection);
 void printMenu(int select);
 string location;
@@ -239,6 +239,9 @@ void controlAccounts(){
 struct AccountData {
     int count;
     float total;
+
+    float scalex;
+    float scaley;
 };
 /*Requires Digit Format*/
 static int getDaysOfMonth(int month){
@@ -301,7 +304,7 @@ static string getCurrentDateTime() {
     }else{
         currentDateTime << ltm->tm_mday;
     }
-    free(ltm);
+    
     return currentDateTime.str();
 }
 /*Returns Absolute Value of Total Recurring Payment*/
@@ -348,7 +351,8 @@ static float getRecurringPayments(string dateFrom, string dateTo, string period,
     counter++;
     day2.str("");
     in = dateTo.at(counter);
-    while(in!='-'){
+    int onetwo =0;
+    for(onetwo=0;onetwo<1;onetwo++){
         day2 << in;
         counter++;
         in = dateTo.at(counter);
@@ -361,11 +365,11 @@ static float getRecurringPayments(string dateFrom, string dateTo, string period,
     in = ' ' ;
     counter=0;
     year1.str("");
-    in = dateTo.at(counter);
+    in = dateFrom.at(counter);
     while(in!='-'){
         year1 << in;
         counter++;
-        in = dateTo.at(counter);
+        in = dateFrom.at(counter);
     }
     year1 >> year1Val;
 
@@ -373,11 +377,11 @@ static float getRecurringPayments(string dateFrom, string dateTo, string period,
     in = ' ';
     counter++;
     month1.str("");
-    in = dateTo.at(counter);
+    in = dateFrom.at(counter);
     while(in!='-'){
         month1 << in;
         counter++;
-        in = dateTo.at(counter);
+        in = dateFrom.at(counter);
     }
     month1 >> month1Val;
 
@@ -385,12 +389,12 @@ static float getRecurringPayments(string dateFrom, string dateTo, string period,
     in = ' ';
     counter++;
     day1.str("");
-    in = dateTo.at(counter);
-    while(in!='-'){
+    in = dateFrom.at(counter);
+    
         day1 << in;
         counter++;
-        in = dateTo.at(counter);
-    }
+        in = dateFrom.at(counter);
+    
     day1 >> day1Val;
 
     float yearDif = year2Val - year1Val;
@@ -462,25 +466,31 @@ void control_a_Account(int selection){
     AccountData data;
     while(1){
         
-        data = print_a_Account(selection,internal);
+        if(data.count){
+            data = print_a_Account(data.scalex,data.scaley,selection,internal);
+        }else{
+          data = print_a_Account(1,1,selection,internal);  
+        }
+        
         
 
         val = getch();
         
         if(val==258){/*Down Arrow*/
             internal++;
-            if(internal==data.total){
+            if(internal==data.count+1){
                 internal=0;
             }
         }
         if(val==259){/*Up Arrow*/
             internal--;
             if(internal==-1){
-                internal=data.total-1;
+                internal=data.count-1;
+               
             }
         }
         if(val==10){
-            if(data.total==internal){
+            if(data.count==internal){
                 return;
             }
         }
@@ -488,17 +498,22 @@ void control_a_Account(int selection){
     
 }
 
-AccountData print_a_Account(int select,int internal){
+AccountData print_a_Account(float scale_x,float scale_y,int select,int internal){
      init_pair(5,COLOR_GREEN,COLOR_BLACK);
      init_pair(0,COLOR_WHITE,COLOR_BLACK);
+     float scalex = scale_x;
+     float scaley = scale_y;
+     int width = 80*scalex;
+     int height = 20*scaley;
+
      clear();
      refresh();
-     printBorder();
+     printBorderWithScale(scalex,scaley);
      /*Prints Border Between Data and Computed Data*/
      int val = 0;
      string border = "#";
      for(val=0;val<80;val++){
-         mvaddstr(20,val,border.c_str());
+         mvaddstr(height,val,border.c_str());
      }
      /*Prints Data About the Account*/
      ResultSet* res;
@@ -526,13 +541,54 @@ AccountData print_a_Account(int select,int internal){
          while(res->next()){
              counter++;
              string row = "";
-             row = row + res->getString(1) + "|" + res->getString(2) + "|" + res->getString(3) + "|" + res->getString(4) + "|" + res->getString(5) + "|" + res->getString(6) + "|" + res->getString(7) + "|" + res->getString(8) + "|";
+             
+             
+             if(res->getString(1)=="1"){
+                 row += "Expense";
+             }else{
+                 row += "Income";
+             }
+             row += "|";
+             if(res->getString(2)=="1"){
+                 row += "Recurring";
+             }else{
+                 row += "Non-Recurring";
+             }
+             row += "|";
+             if(res->getString(2)=="1"){
+                 row += res->getString(3);
+                 row += "|";
+                 row += res->getString(4);
+                 row += "|";
+                 row += "Period of Days: " + res->getString(5);
+                 row += "|";
+
+             }else{
+                 row += "N/A";
+                 row += "|";
+                 row += "N/A";
+                 row += "|";
+                 row += "N/A";
+                 row += "|";
+             }
+             
+             row = row + "$" + res->getString(6) + "|" + "DESC:" + res->getString(7) + "|" + "ID:" + res->getString(8) + "|";
+             
+             int length = row.size();
+
+             if(width-length < 10 || length > width){
+                 scalex+=.25;
+                 width = .25 * width;
+             }
+
+             
+             
              if((counter-1)==internal){
                  attron(COLOR_PAIR(5));
              }else{
                  attron(COLOR_PAIR(0));
              }
-             mvaddstr(counter,35,row.c_str());
+             mvaddstr(counter,1,row.c_str());
              if((counter-1)==internal){
                  attroff(COLOR_PAIR(5));
              }else{
@@ -559,14 +615,14 @@ AccountData print_a_Account(int select,int internal){
                 total+=num;
              }
          }
-         if((counter-1)==internal){
+         if((counter)==internal){
                  attron(COLOR_PAIR(5));
              }else{
                  attron(COLOR_PAIR(0));
              }
              string ret = "RETURN";
-             mvaddstr(counter+1,35,ret.c_str());
-             if((counter-1)==internal){
+             mvaddstr(counter+1,1,ret.c_str());
+             if((counter)==internal){
                  attroff(COLOR_PAIR(5));
              }else{
                  attroff(COLOR_PAIR(0));
@@ -575,8 +631,37 @@ AccountData print_a_Account(int select,int internal){
          
          rets.total = total;
          rets.count = counter;
+         
+         init_pair(7,COLOR_RED,COLOR_BLACK);
+        if(total>=0){
+            attron(COLOR_PAIR(5));
+        }else{
+            attron(COLOR_PAIR(7));
+        }
+         stringstream display;
+         string totaldisp = "TOTAL: $";
+         display.str("");
+         display << total;
+         totaldisp += display.str();
+         mvaddstr(21,1,totaldisp.c_str());
+         if(total>=0){
+            attroff(COLOR_PAIR(5));
+        }else{
+            attroff(COLOR_PAIR(7));
+        }
+
      }
+        if(height-rets.count<5 || rets.count>=height){
+            scaley*=.25;
+        }
+        
+
+
+        rets.scalex = scalex;
+        rets.scaley = scaley;
         return rets;
 }
 
-
+/*
+INSERT INTO RobWood5 VALUES (  0 ,1 ,'2016-01-01','2016-05-15' ,1,20 ,'JOB' ,NULL);
+*/

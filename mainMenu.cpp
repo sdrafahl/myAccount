@@ -144,4 +144,22 @@ void printBorder(){
     for(x=0;x<26;x++){/*Right Side*/
         mvaddstr(x,80,d.c_str());
     }
-}
+} 
+
+void printBorderWithScale(float scalex, float scaley){
+    float x=0;
+    float y=0;
+    string d = "#";
+    for(y=0;y<80*scalex;y++){/*Top*/
+        mvaddstr(0,y,d.c_str());
+    }
+    for(y=0;y<80*scalex;y++){/*Bottom*/
+        mvaddstr(25*scaley,y,d.c_str());
+    }
+    for(x=0;x<26*scaley;x++){/*Left Side*/
+        mvaddstr(x,0,d.c_str());
+    }
+    for(x=0;x<26*scaley;x++){/*Right Side*/
+        mvaddstr(x,80*scalex,d.c_str());
+    }
+} 
