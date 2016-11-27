@@ -10,10 +10,15 @@
 #include <cppconn/resultset.h>
 #include <cppconn/statement.h>
 struct AccountData;
+struct AccountD;
 AccountData print_a_Account(float scale_x,float scale_y,int select,int internal);
 void control_a_Account(int selection);
 void printMenu(int select);
 void removeColumn(AccountData d,int sel);
+void addToDatabase(AccountData d,AccountD da);
+void printDataEntry(AccountD d,int sel);
+void newDataEntry(AccountData da);
+
 string location;
 string user;
 string password;
@@ -478,7 +483,9 @@ void control_a_Account(int selection){
         
 
         val = getch();
-        
+        if(val==97){
+            newDataEntry(data);
+        }
         if(val==258){/*Down Arrow*/
             internal++;
             if(internal==data.count+1){
@@ -489,7 +496,9 @@ void control_a_Account(int selection){
             internal--;
             if(internal==-1){
                 internal=data.count-1;
-               
+                if(internal==-1){
+                    internal=0;
+                }
             }
         }
         if(val==114){
@@ -517,12 +526,13 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
 
      clear();
      refresh();
-     printBorderWithScale(scalex,scaley);
+     printBorder();
+     //printBorderWithScale(scalex,scaley);
      /*Prints Border Between Data and Computed Data*/
      int val = 0;
      string border = "#";
-     for(val=0;val<80*scalex;val++){
-         mvaddstr(height,val,border.c_str());
+     for(val=0;val<80;val++){
+         mvaddstr(20,val,border.c_str());
      }
      /*Prints Data About the Account*/
      ResultSet* res;
@@ -653,7 +663,7 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
          display.str("");
          display << total;
          totaldisp += display.str();
-         mvaddstr(height+1,1,totaldisp.c_str());
+         mvaddstr(21,1,totaldisp.c_str());
          if(total>=0){
             attroff(COLOR_PAIR(5));
         }else{
@@ -666,10 +676,10 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
         }
         
         string rem = "REMOVE - r";
-        mvaddstr(height+1,20,rem.c_str());
+        mvaddstr(22,20,rem.c_str());
         
         rem = "NEW - a";
-        mvaddstr(height+2,20,rem.c_str());
+        mvaddstr(21,20,rem.c_str());
 
         rets.scalex = scalex;
         rets.scaley = scaley;
@@ -705,4 +715,272 @@ void removeColumn(AccountData d,int sel){
      stmt->execute(command);
 
      
+}
+struct AccountD{
+    string EXP_INC;
+    string RECURRING;
+    string REC_START;
+    string REC_END;
+    string PERIOD;
+    string amount;
+    string description;
+};
+void newDataEntry(AccountData da){
+    int select = 0;
+    AccountD d;
+    
+    while(1){
+        printDataEntry(d,select);
+        int val = getch();
+        char charval = (char)val;
+        if(val==258){/*Down Arrow*/
+            select++;
+            if(select==9){
+                select=0;
+            }
+        }
+        if(val==259){/*Up Arrow*/
+            select--;
+            if(select==-1){
+                select=8;
+               }
+        }
+        if(val!=10 && val!=259 && val!=258 && select!=7 && select !=8){
+            if(charval=='\a'){
+                    if(select==0){
+                        d.EXP_INC = d.EXP_INC.substr(0,d.EXP_INC.size()-1);
+                    }
+                    if(select==1){
+                        d.RECURRING = d.RECURRING.substr(0,d.RECURRING.size()-1);
+                    }
+                    if(select==2){
+                        d.REC_START = d.REC_START.substr(0,d.REC_START.size()-1);
+                    }
+                    if(select==3){
+                        d.REC_END = d.REC_END.substr(0,d.REC_END.size()-1);
+                    }
+                    if(select==4){
+                        d.PERIOD = d.PERIOD.substr(0,d.PERIOD.size()-1);
+                    }
+                    if(select==5){
+                        d.amount = d.amount.substr(0,d.amount.size()-1);
+                    }
+                    if(select==6){
+                        d.description = d.description.substr(0,d.description.size()-1);
+                    }
+            }else{
+                 
+                    if(select==0){
+                        d.EXP_INC+=charval;
+                    }
+                    if(select==1){
+                        d.RECURRING+=charval;
+                    }
+                    if(select==2){
+                        d.REC_START+=charval;
+                    }
+                    if(select==3){
+                        d.REC_END+=charval;
+                    }
+                    if(select==4){
+                        d.PERIOD+=charval;
+                    }
+                    if(select==5){
+                        d.amount+=charval;
+                    }
+                    if(select==6){
+                        d.description+=charval;
+                    }
+            }
+        }
+        if(val==10){
+            if(select==7){/*Return*/
+                return;
+            }
+            if(select==8){/*Confirm*/
+                addToDatabase(da,d);
+                return;
+            }
+        }
+
+    }
+
+}
+
+void addToDatabase(AccountData d,AccountD da){
+    string command;
+    string pos_neg;
+    if(da.EXP_INC=="I" || da.EXP_INC=="i"){
+        pos_neg="0";
+    }else{
+        pos_neg="1";
+    }
+    string rec;
+    if(da.RECURRING=="y" || da.RECURRING=="Y"){
+        rec="1";
+    }else{
+        rec="0";
+    }
+    if(da.RECURRING=="y"){
+        command = "INSERT INTO " + d.table + " VALUES (" + pos_neg + "," + rec +","+ "'" +da.REC_START + "'" +","+ "'" +da.REC_END+ "'" +","+da.PERIOD+","+da.amount+", '"+da.description +"',"+"NULL);";
+    }else{
+        command = "INSERT INTO " + d.table + " VALUES (" + pos_neg + "," + rec +","+ "NULL" +","+"NULL" +",NULL,"+da.amount+", '"+da.description +"',"+"NULL);";
+    }
+    Statement* stmt;
+    stmt = acc.getStatement();
+    try{
+    stmt->execute(command);
+    }catch(sql::SQLException &e){
+        string message = "ERROR ADDING DATA";
+        init_pair(6,COLOR_RED,COLOR_BLACK);
+        attron(COLOR_PAIR(6));
+        mvaddstr(10,35,message.c_str());
+        sleep(1);
+        attroff(COLOR_PAIR(6));
+    }
+}
+
+void printDataEntry(AccountD d,int sel){
+    init_pair(5,COLOR_GREEN,COLOR_BLACK);
+    init_pair(0,COLOR_WHITE,COLOR_BLACK);
+    clear();
+    refresh();
+    printBorder();
+    if(sel==0){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    std::ostringstream stream;
+    string field = "Expense or Income,Enter i or e: ";
+    stream.str("");
+    stream << field << d.EXP_INC;
+    mvaddstr(1,1,stream.str().c_str());
+    if(sel==0){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==1){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Recuring,Enter y or n:  ";
+    stream.str("");
+    stream << field << d.RECURRING;
+    mvaddstr(2,1,stream.str().c_str());
+    if(sel==1){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    string info = "If Recuring Enter In Dates in Format yyyy-mm-dd";
+    mvaddstr(3,1,info.c_str());
+
+    if(sel==2){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Enter Recurring Start Date:  ";
+    stream.str("");
+    stream << field << d.REC_START;
+    mvaddstr(4,1,stream.str().c_str());
+    if(sel==2){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==3){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Enter Recurring End Date:  ";
+    stream.str("");
+    stream << field << d.REC_END;
+    mvaddstr(5,1,stream.str().c_str());
+    if(sel==3){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==4){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Recurring Period in Days:   ";
+    stream.str("");
+    stream << field << d.PERIOD;
+    mvaddstr(6,1,stream.str().c_str());
+    if(sel==4){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==5){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Amount: ";
+    stream.str("");
+    stream << field << d.amount;
+    mvaddstr(7,1,stream.str().c_str());
+    if(sel==5){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==6){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Description: ";
+    stream.str("");
+    stream << field << d.description;
+    mvaddstr(8,1,stream.str().c_str());
+    if(sel==6){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+
+    if(sel==7){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Return";
+    mvaddstr(9,1,field.c_str());
+    if(sel==7){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(sel==8){
+        attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    field = "Confirm";
+    mvaddstr(10,1,field.c_str());
+    if(sel==8){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+
 }
