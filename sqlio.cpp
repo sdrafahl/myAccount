@@ -11,6 +11,7 @@
 #include <cppconn/statement.h>
 struct AccountData;
 struct AccountD;
+struct NewAccountData;
 AccountData print_a_Account(float scale_x,float scale_y,int select,int internal);
 void control_a_Account(int selection);
 void printMenu(int select);
@@ -18,6 +19,9 @@ void removeColumn(AccountData d,int sel);
 void addToDatabase(AccountData d,AccountD da);
 void printDataEntry(AccountD d,int sel);
 void newDataEntry(AccountData da);
+void addAccount();
+void addTables(NewAccountData d);
+void printAccount(NewAccountData d,int selection);
 
 string location;
 string user;
@@ -236,7 +240,7 @@ void controlAccounts(){
             }
         }
         if(val==114){/*Remove*/
-            if(selection!=total-1){/*If Not Return*/
+            if(selection!=total){/*If Not Return*/
                 ResultSet* res;
                 Statement* stmt;
                 std::ostringstream ss;
@@ -261,6 +265,11 @@ void controlAccounts(){
                 command = "DROP TABLE IF EXISTS " + tableToDelete;
                 stmt->execute(command);
                 delete stmt;
+            }
+        }
+        if(val==97){/*Add A New Account*/
+            if(selection!=total){
+                addAccount();
             }
         }
         if(val==10){
@@ -546,6 +555,173 @@ void control_a_Account(int selection){
     }    
     
 }
+
+struct NewAccountData{
+    string last;
+    string first;
+    string date;
+};
+void addAccount(){
+    int selection=0;
+    NewAccountData d;
+    while(1){
+        printAccount(d,selection);
+        char in = getch();
+         if(in=='\002'){/*Down Arrow*/
+            selection++;
+            if(selection==5){
+                selection=0;
+            }
+        }
+        if(in=='\003'){/*Up Arrow*/
+            selection--;
+            if(selection==-1){
+                selection=0;
+            }   
+        }
+        if(in=='\n'){/*Enter Key*/
+                if(selection==3){/*Return*/
+                return;
+            }
+            if(selection==4){/*Make a New Account*/
+                addTables(d);
+                return;
+            }
+        }
+        if(in=='\a'){/*Backspace Key*/
+            if(selection==0){
+                d.last = d.last.substr(0,d.last.size()-1);
+            }
+            if(selection==1){
+                d.first = d.first.substr(0,d.first.size()-1);
+            }
+            if(selection==2){
+                d.date = d.date.substr(0,d.date.size()-1);
+            }
+        }
+        if(in !='\a' && in !='\n' && in!='\002' && in!='\003'){
+            if(selection==0){
+                d.last+=in;
+            }else{
+                if(selection==1){
+                    d.first+=in;
+                }else{
+                    if(selection==2){
+                        d.date+=in;
+                    }
+                }
+            }
+        }     
+    }
+    
+}
+
+void addTables(NewAccountData d){
+    string command = "INSERT INTO ACCOUNTS VALUES('" + d.last + "','" + d.first + "',NULL,'" + d.date + "')";
+     Statement* stmt;
+     stmt = acc.getStatement();
+     stmt->execute(command);
+
+     delete stmt;
+
+
+     ResultSet* res;
+     command = "SELECT * FROM ACCOUNTS WHERE LAST_N ='" + d.last + "' AND FIRST_N =" + "'" + d.first + "'";
+     stmt = acc.getStatement();
+     res = stmt->executeQuery(command.c_str());
+     delete stmt;
+     while(res->next()){
+         stmt = acc.getStatement();
+         command = "CREATE TABLE IF NOT EXISTS " + d.last + d.first + res->getString(3) +
+          "(EXP_INC BOOL NOT NULL,RECURRING BOOL NOT NULL,REC_START DATE NULL,REC_END DATE NULL,REC_PERIORD_DAYS INT(255) NULL,AMOUNT DOUBLE NOT NULL,DESCRIPTION VARCHAR(1000) NOT NULL,ID MEDIUMINT(9) NOT NULL AUTO_INCREMENT,PRIMARY KEY (ID));" ;
+         stmt->execute(command);
+         delete stmt;
+     }
+     delete res;
+     
+
+}
+void printAccount(NewAccountData d,int selection){
+     init_pair(5,COLOR_GREEN,COLOR_BLACK);
+     init_pair(0,COLOR_WHITE,COLOR_BLACK);
+     clear();
+     refresh();
+     printBorder();
+
+     string disp = "Last Name: " + d.last;
+
+     if(selection==0){
+         attron(COLOR_PAIR(5));
+     }else{
+         attron(COLOR_PAIR(0));
+     }
+     mvaddstr(1,2,disp.c_str());
+     if(selection==0){
+         attroff(COLOR_PAIR(5));
+     }else{
+         attroff(COLOR_PAIR(0));
+     }
+
+     disp = "First Name: " + d.first;
+
+     if(selection==1){
+         attron(COLOR_PAIR(5));
+     }else{
+         attron(COLOR_PAIR(0));
+     }
+     mvaddstr(3,2,disp.c_str());
+     if(selection==1){
+         attroff(COLOR_PAIR(5));
+     }else{
+         attroff(COLOR_PAIR(0));
+     }
+        
+     disp = "Date Created(yyyy-mm-dd): " + d.date;
+
+     if(selection==2){
+         attron(COLOR_PAIR(5));
+     }else{
+         attron(COLOR_PAIR(0));
+     }
+     mvaddstr(5,2,disp.c_str());
+     if(selection==2){
+         attroff(COLOR_PAIR(5));
+     }else{
+         attroff(COLOR_PAIR(0));
+     }
+
+     disp = "RETURN"; 
+
+     if(selection==3){
+         attron(COLOR_PAIR(5));
+     }else{
+         attron(COLOR_PAIR(0));
+     }
+     mvaddstr(7,2,disp.c_str());
+     if(selection==3){
+         attroff(COLOR_PAIR(5));
+     }else{
+         attroff(COLOR_PAIR(0));
+     }
+
+     disp = "CONFIRM"; 
+
+     if(selection==4){
+         attron(COLOR_PAIR(5));
+     }else{
+         attron(COLOR_PAIR(0));
+     }
+     mvaddstr(9,2,disp.c_str());
+     if(selection==4){
+         attroff(COLOR_PAIR(5));
+     }else{
+         attroff(COLOR_PAIR(0));
+     }
+
+
+}
+
+
 
 AccountData print_a_Account(float scale_x,float scale_y,int select,int internal){
      init_pair(5,COLOR_GREEN,COLOR_BLACK);
