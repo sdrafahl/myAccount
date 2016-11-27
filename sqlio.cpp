@@ -230,6 +230,37 @@ void controlAccounts(){
             selection--;
             if(selection==-1){
                 selection=total-1;
+                if(selection==-1){
+                    selection=0;
+                }
+            }
+        }
+        if(val==114){/*Remove*/
+            if(selection!=total-1){/*If Not Return*/
+                ResultSet* res;
+                Statement* stmt;
+                std::ostringstream ss;
+                string command = "SELECT * FROM ACCOUNTS LIMIT ";
+                ss.str("");
+                ss << command << selection << ",1";
+                stmt = acc.getStatement();
+     
+                res = stmt->executeQuery(ss.str());
+                res->next();
+                std::ostringstream con;
+                string id = res->getString(3);
+                string tableToDelete = res->getString(1) + res->getString(2) + res->getString(3);
+                command = "DELETE FROM ACCOUNTS WHERE ID_NUMBER=" + id;
+
+                delete stmt;
+                delete res;
+                stmt = acc.getStatement();
+                stmt->execute(command);
+                delete stmt;
+                stmt = acc.getStatement();
+                command = "DROP TABLE IF EXISTS " + tableToDelete;
+                stmt->execute(command);
+                delete stmt;
             }
         }
         if(val==10){

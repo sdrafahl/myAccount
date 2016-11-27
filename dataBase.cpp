@@ -50,7 +50,7 @@ int MysqlDB::printAccounts(int sel){
         }else{
             attron(COLOR_PAIR(0));
         }
-        mvaddstr(incr+1,40,stringStream.str().c_str());
+        mvaddstr(incr+1,2,stringStream.str().c_str());
         if(sel==incr){
             attroff(COLOR_PAIR(5));
         }else{
@@ -65,12 +65,24 @@ int MysqlDB::printAccounts(int sel){
         attron(COLOR_PAIR(0));
     }
     string exit = "RETURN";
-    mvaddstr(incr+1,40,exit.c_str());
+    mvaddstr(incr+1,2,exit.c_str());
     if(sel==incr){
         attroff(COLOR_PAIR(5));
     }else{
         attroff(COLOR_PAIR(0));
     }
+
+    /*Print Command Inputs*/
+    string wall = "#";
+    int x;
+    for(x=0;x<80;x++){
+         mvaddstr(20,x,wall.c_str());
+    }
+    string remove ="Remove Accounts -r";
+    string add = "Add Account -a";
+    mvaddstr(21,2,remove.c_str());
+    mvaddstr(22,2,add.c_str());
+
 
     delete res;
     delete stmt;
