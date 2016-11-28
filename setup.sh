@@ -1,4 +1,4 @@
-apt-get install libmysqlcppconn-dev
+
 
 echo "Create New MYSQL USER: y,n"
 read new

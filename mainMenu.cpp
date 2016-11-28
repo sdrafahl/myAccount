@@ -21,14 +21,14 @@ void startMainMenu(){
 
         case 258:/*DOWN ARROW*/
             selection++;
-            if(selection==5){
+            if(selection==4){
                 selection=0;
             }
         break;
         case 259:/*UP ARROW*/
             selection--;
             if(selection==-1){
-                selection=4;
+                selection=3;
             }
         break;
         case 10:/*ENTER*/
@@ -38,18 +38,13 @@ void startMainMenu(){
                         controlAccounts();
                     }
                 break;
-                case 1:/*Make a new account*/
-                    if(acc.isConnected()){
-
-                    }
-                break;
-                case 2:/*Connect to MySQL*/
+                case 1:/*Connect to MySQL*/
                     startMenu();
                 break;
-                case 3:/*Disconect*/
+                case 2:/*Disconect*/
                     acc.disconect();
                 break;
-                case 4:/*Exit and Save*/
+                case 3:/*Exit and Save*/
                     if(acc.isConnected()){
                         /*Save Data if Connected*/
                     }
@@ -89,28 +84,28 @@ void printMainMenu(int select){
         attroff(COLOR_PAIR(5));
     }else{
         attroff(COLOR_PAIR(0));
-    }
+    }  
     
     if(select==1){
-        attron(COLOR_PAIR(5));
-    }else{
-        attron(COLOR_PAIR(0));
-    }
-    menu = "MAKE A NEW ACCOUNT";
-    mvaddstr(4,31,menu.c_str());
-    if(select==1){
-        attroff(COLOR_PAIR(5));
-    }else{
-        attroff(COLOR_PAIR(0));
-    }
-    
-    if(select==2){
         attron(COLOR_PAIR(5));
     }else{
         attron(COLOR_PAIR(0));
     }
     menu = "CONNECT TO MYSQL DATABASE";
-    mvaddstr(6,28,menu.c_str());
+    mvaddstr(4,28,menu.c_str());
+    if(select==1){
+        attroff(COLOR_PAIR(5));
+    }else{
+        attroff(COLOR_PAIR(0));
+    }
+
+    if(select==2){
+    attron(COLOR_PAIR(5));
+    }else{
+        attron(COLOR_PAIR(0));
+    }
+    menu = "DISCONNECT";
+    mvaddstr(6,35,menu.c_str());
     if(select==2){
         attroff(COLOR_PAIR(5));
     }else{
@@ -118,26 +113,13 @@ void printMainMenu(int select){
     }
 
     if(select==3){
-    attron(COLOR_PAIR(5));
-    }else{
-        attron(COLOR_PAIR(0));
-    }
-    menu = "DISCONNECT";
-    mvaddstr(8,35,menu.c_str());
-    if(select==3){
-        attroff(COLOR_PAIR(5));
-    }else{
-        attroff(COLOR_PAIR(0));
-    }
-
-    if(select==4){
         attron(COLOR_PAIR(5));
     }else{
         attron(COLOR_PAIR(0));
     }
     menu = "EXIT";
-    mvaddstr(10,38,menu.c_str());
-    if(select==4){
+    mvaddstr(8,38,menu.c_str());
+    if(select==3){
         attroff(COLOR_PAIR(5));
     }else{
         attroff(COLOR_PAIR(0));
