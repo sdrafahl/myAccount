@@ -12,7 +12,7 @@ Installation:
     To setup a local database on your system please follow these instructions for Linux installation. 
 
     1. sudo apt-get install mysql-server
-    2. apt-get install libmysqlcppconn-dev
+    2. apt-get install libmysqlcppconn-dev(Debian)(For Non Debian Instalation View http://dev.mysql.com/downloads/connector/cpp/)
     3. sudo apt-get update
     (For Further Help Installing MYSQL Please Visit http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
     4. make
