@@ -7,13 +7,15 @@ About:
     expenses and income like a checkbook for checks. It uses Ncurses for a front end
     so this program will be run in a terminal.
 
+    This program is under the MIT license.
+
 Installation:
     To install this program and use it you will need MYSQL on your system or a remote system.
     To setup a local database on your system please follow these instructions for Linux installation. 
 
-    1. sudo apt-get install mysql-server
+    1. sudo apt-get install mysql-server(Debian)
     2. apt-get install libmysqlcppconn-dev(Debian)(For Non Debian Instalation View http://dev.mysql.com/downloads/connector/cpp/)
-    3. sudo apt-get update
+    3. sudo apt-get update(Debian)
     (For Further Help Installing MYSQL Please Visit http://dev.mysql.com/doc/refman/5.7/en/linux-installation.html)
     4. make
     5. ./myAccount
