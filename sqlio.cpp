@@ -5,6 +5,7 @@
 #include "mainMenu.h"
 #include <ctime>
 #include <iostream>
+#include <math.h>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
 #include <cppconn/resultset.h>
@@ -840,6 +841,7 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
                     num*=-1;
                 }
                 total+=num;
+
              }
          }
          if((counter)==internal){
@@ -868,7 +870,11 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
          stringstream display;
          string totaldisp = "TOTAL: $";
          display.str("");
-         display << total;
+         
+         float rounded = floorf(total*100)/100;
+         rounded+=.01;
+         display << rounded;
+         
          totaldisp += display.str();
          mvaddstr(21,1,totaldisp.c_str());
          if(total>=0){
