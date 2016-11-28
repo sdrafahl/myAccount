@@ -1,0 +1,276 @@
+commit 590560ab
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 27 19:59:59 2016 -0600
+
+    Added README
+
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4284832 -> 4284832 bytes
+ README.md                 |  67 ++++++++++++++++++++++++++++++++++++++++++++++
+ mainMenu.cpp              |  46 ++++++++++---------------------
+ setup.sh                  |   2 +-
+ 5 files changed, 82 insertions(+), 33 deletions(-)
+
+commit 6a440a2e
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 27 19:12:32 2016 -0600
+
+    Made setup file more in depth
+
+ setup.sh | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+commit 0c0b5f34
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 27 18:13:22 2016 -0600
+
+    setup dump file for mysql
+
+ layout.sql | 43 +++++++++++++++++++++++++++++++++++++++++++
+ setup.sh   |  1 +
+ 2 files changed, 44 insertions(+)
+
+commit 44f37c21
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 27 17:50:05 2016 -0600
+
+    Program works at basic functional level
+
+ .vscode/.browse.VC.db     | Bin 32051200 -> 32059392 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4350752 -> 4284832 bytes
+ sqlio.cpp                 | 178 +++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 177 insertions(+), 1 deletion(-)
+
+commit f38ade00
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sat Nov 26 23:59:05 2016 -0600
+
+    Enabled the ability to delete accounts from the database
+
+ .vscode/.browse.VC.db     | Bin 32051200 -> 32051200 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4136512 -> 4350752 bytes
+ dataBase.cpp              |  16 ++++++++++++++--
+ sqlio.cpp                 |  31 +++++++++++++++++++++++++++++++
+ 5 files changed, 45 insertions(+), 2 deletions(-)
+
+commit 64cb4057
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sat Nov 26 22:42:59 2016 -0600
+
+    Added the ability to add or remove account income and expenses
+
+ .vscode/.browse.VC.db     | Bin 32043008 -> 32051200 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4124152 -> 4136512 bytes
+ sqlio.cpp                 | 294 ++++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 286 insertions(+), 8 deletions(-)
+
+commit ec3fc45f
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sat Nov 26 01:36:40 2016 -0600
+
+    Added the ability to remove data from an account and even more UI enhancements
+
+ .vscode/.browse.VC.db     | Bin 32043008 -> 32043008 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 3967592 -> 4124152 bytes
+ account.h                 |   2 ++
+ dataBase.cpp              |   7 +++++-
+ mainMenu.cpp              |  53 +++++++++++++++++++++++++++++++++++++++++-----
+ sqlio.cpp                 |  49 ++++++++++++++++++++++++++++++++++++++----
+ 7 files changed, 101 insertions(+), 10 deletions(-)
+
+commit 216c1bdc
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Fri Nov 25 21:56:40 2016 -0600
+
+    Program can calculate reccuring payments and non recurring payments and display the total onto the UI, other enhancements to the UI have been done
+
+ .vscode/.browse.VC.db     | Bin 32043008 -> 32043008 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4218912 -> 3967592 bytes
+ Makefile                  |  12 ++---
+ mainMenu.cpp              |  20 ++++++-
+ mainMenu.h                |   1 +
+ myAccount                 | Bin 924954 -> 0 bytes
+ program.a                 | Bin 2467386 -> 0 bytes
+ sqlio.cpp                 | 133 +++++++++++++++++++++++++++++++++++++---------
+ 9 files changed, 135 insertions(+), 31 deletions(-)
+
+commit 27540080
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Thu Nov 24 21:12:00 2016 -0600
+
+    Code compiles, no functional testing
+
+ .vscode/.browse.VC.db     | Bin 32038912 -> 32043008 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4161232 -> 4218912 bytes
+ account.h                 |  11 ++-
+ myAccount                 | Bin 363453 -> 924954 bytes
+ program.a                 | Bin 846476 -> 2467386 bytes
+ sqlio.cpp                 | 231 +++++++++++++++++++++++++++++-----------------
+ 7 files changed, 153 insertions(+), 89 deletions(-)
+
+commit a5a24d8b
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Thu Nov 24 17:16:44 2016 -0600
+
+    Added Code to calculate recuring amounts of payments or expenses, also some code was added for the UI to display data about each account, this code is not tested yet
+
+ .vscode/.browse.VC.db     | Bin 32018432 -> 32038912 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4152992 -> 4161232 bytes
+ sqlio.cpp                 | 257 +++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 256 insertions(+), 1 deletion(-)
+
+commit ac983488
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Thu Nov 24 01:19:37 2016 -0600
+
+    Began writting some code to concatenate the data from the ACCOUNTS table to determine the table name of the specified corresponding table
+
+ .vscode/.browse.VC.db     | Bin 32014336 -> 32018432 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 3889312 -> 4152992 bytes
+ Makefile                  |   3 +-
+ account.cpp               |   1 +
+ account.h                 |   5 +++-
+ dataBase.cpp              |  25 +++++++++++++---
+ init.cpp                  |   5 ++--
+ init.h                    |   2 +-
+ mainMenu.cpp              |  11 ++++---
+ myAccount                 | Bin 351177 -> 363453 bytes
+ program.a                 | Bin 905216 -> 846476 bytes
+ sqlio.cpp                 |  72 ++++++++++++++++++++++++++++++++++++++++++++--
+ sqlio.h                   |   2 +-
+ viewAccounts.cpp          |  29 -------------------
+ viewAccounts.h            |   5 ----
+ 16 files changed, 106 insertions(+), 54 deletions(-)
+
+commit 9ee280d8
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Wed Nov 23 15:30:48 2016 -0600
+
+    Enhanced the UI, made it possible to connect to MYSQL database through UI.
+
+ .vscode/.browse.VC.db     | Bin 32014336 -> 32014336 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 5496112 -> 3889312 bytes
+ mainMenu.cpp              |  31 +++++++++++---
+ mainMenu.h                |   2 +-
+ myAccount                 | Bin 0 -> 351177 bytes
+ program.a                 | Bin 0 -> 905216 bytes
+ sqlio.cpp                 | 100 +++++++++++++++++++++++++++++++---------------
+ 8 files changed, 94 insertions(+), 39 deletions(-)
+
+commit 29c652a4
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Tue Nov 22 00:43:09 2016 -0600
+
+    Basic UI functionality works for the main menu and the code compiles
+
+ myAccount | Bin 362423 -> 0 bytes
+ program.a | Bin 938986 -> 0 bytes
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit c912ff16
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Tue Nov 22 00:41:34 2016 -0600
+
+    Basic UI functionality works and code so far compiles
+
+ .vscode/.browse.VC.db         | Bin 233472 -> 32014336 bytes
+ .vscode/.browse.VC.db-shm     | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal     | Bin 3271312 -> 5496112 bytes
+ .vscode/c_cpp_properties.json |  28 ++++++++++++++++++++++
+ .vscode/launch.json           |  41 ++++++++++++++++++++++++++++++++
+ Makefile                      |   2 +-
+ account.cpp                   |   9 +++++++
+ account.h                     |  53 ++++++++++++++++++++++++++++--------------
+ clean.bash                    |   4 +++-
+ dataBase.cpp                  |   9 +++----
+ dataBase.h                    |  26 ---------------------
+ init.cpp                      |   6 +++--
+ init.h                        |   3 +++
+ main.cpp                      |   5 +++-
+ mainMenu.cpp                  |  25 ++++++++++++--------
+ mainMenu.h                    |   1 +
+ myAccount                     | Bin 0 -> 362423 bytes
+ program.a                     | Bin 0 -> 938986 bytes
+ sqlio.cpp                     |  24 ++++++++++++-------
+ sqlio.h                       |   5 +++-
+ viewAccounts.cpp              |   5 +++-
+ 21 files changed, 173 insertions(+), 73 deletions(-)
+
+commit fdb95dbb
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Mon Nov 21 18:52:25 2016 -0600
+
+    Added some code to view accounts and set up the Makefile and other development tools
+
+ .vscode/.browse.VC.db     | Bin 233472 -> 233472 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 4120032 -> 3271312 bytes
+ Makefile                  |  11 +++++++++++
+ Makefile~                 |   0
+ account.h                 |   8 +++++++-
+ clean.bash                |   7 +++++++
+ dataBase.cpp              |  35 +++++++++++++++++++++++++++++++++++
+ dataBase.h                |  16 ++++++++++------
+ mainMenu.cpp              |   2 +-
+ mainMenu.h                |   6 ++++++
+ setup.sh                  |   4 +++-
+ sqlio.cpp                 |  16 ++++++++++------
+ sqlio.h                   |   6 +++++-
+ viewAccounts.cpp          |  26 ++++++++++++++++++++++++++
+ viewAccounts.h            |   5 +++++
+ 16 files changed, 126 insertions(+), 16 deletions(-)
+
+commit 8e53c47c
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 20 19:47:24 2016 -0600
+
+    Added code to connect to MySQL database
+
+ .vscode/.browse.VC.db     | Bin 225280 -> 233472 bytes
+ .vscode/.browse.VC.db-shm | Bin 32768 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 2113592 -> 4120032 bytes
+ account.h                 |  15 ++++-
+ dataBase.cpp              |  20 +++++++
+ dataBase.h                |  22 +++++++
+ mainMenu.cpp              |  18 ++++--
+ sqlio.cpp                 | 150 ++++++++++++++++++++++++++++++++++++++++++++++
+ sqlio.h                   |   1 +
+ 9 files changed, 220 insertions(+), 6 deletions(-)
+
+commit d2876aa5
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sun Nov 20 18:01:41 2016 -0600
+
+    Added some UI and some skeleton code
+
+ .vscode/.browse.VC.db     | Bin 0 -> 225280 bytes
+ .vscode/.browse.VC.db-shm | Bin 0 -> 32768 bytes
+ .vscode/.browse.VC.db-wal | Bin 0 -> 2113592 bytes
+ account.cpp               |   2 +
+ account.h                 |  21 +++++++++
+ init.cpp                  |  15 ++++++
+ init.h                    |   5 ++
+ main.cpp                  |   7 +++
+ main.h                    |   3 ++
+ mainMenu.cpp              | 114 ++++++++++++++++++++++++++++++++++++++++++++++
+ mainMenu.h                |   0
+ setup.sh                  |   6 +++
+ 12 files changed, 173 insertions(+)
+
+commit bb89926c
+Author: Shane P Drafahl <sdrafahl@iastate.edu>
+Date:   Sat Nov 19 16:18:00 2016 -0600
+
+    Added .gitignore file
+
+ .gitignore | 3 +++
+ 1 file changed, 3 insertions(+)
