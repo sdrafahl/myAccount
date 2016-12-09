@@ -871,9 +871,9 @@ AccountData print_a_Account(float scale_x,float scale_y,int select,int internal)
          string totaldisp = "TOTAL: $";
          display.str("");
          
-         float rounded = floorf(total*100)/100;
-         rounded+=.01;
-         display << rounded;
+        // float rounded = floorf(total*100)/100;
+        // rounded+=.01;
+         display << total;
          
          totaldisp += display.str();
          mvaddstr(21,1,totaldisp.c_str());
