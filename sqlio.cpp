@@ -5,6 +5,7 @@
 #include "mainMenu.h"
 #include <ctime>
 #include <iostream>
+#include <unistd.h>
 #include <math.h>
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
@@ -90,7 +91,7 @@ void startMenu(){
                     attroff(COLOR_PAIR(5));
                     printBorder();
                     refresh();
-                    sleep(2);  
+                    usleep(2);  
                     acc.addDB(db);
                     return;
                 }else{
@@ -102,7 +103,7 @@ void startMenu(){
                     attroff(COLOR_PAIR(6));
                     printBorder();
                     refresh();
-                    sleep(2);  
+                    usleep(2);  
                     return;
                 }
             }
@@ -1048,7 +1049,7 @@ void addToDatabase(AccountData d,AccountD da){
         init_pair(6,COLOR_RED,COLOR_BLACK);
         attron(COLOR_PAIR(6));
         mvaddstr(10,35,message.c_str());
-        sleep(1);
+        usleep(1);
         attroff(COLOR_PAIR(6));
     }
 }
